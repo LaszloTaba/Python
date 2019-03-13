@@ -1,0 +1,191 @@
+'''
+Saturday and Sunday morning, I locked myself into my room and wrote this Python program. I wanted to show you that 1) I'm serious and determined about the opportunity we talked about during our meeting at your office and 2) that I have some programming skills. I felt like I didn't describe myself as a programmer very well in the interview, so here's an example of what I can do.
+
+By the way, I have limited experience with Python. There was one class at NOVA where we discussed it, and just before my interview I watched four short, intoductory YouTube videos on it. I want to show that, even though I barely know Python's syntax or libraries before meeting you, I was determined over the weekend to force myself to do something with it. It turns out I had a lot of fun. Of course, I had to look everything up as I was doing it, but at least I managed to write this program in a language with which I'm not familiar.
+
+This program executes a few simple bash commands in a loop. It saves a record of those commands in a file called audit_log. I had other ideas for a program to write for you, but I chose this one because I could finish it over the weekend. I think a fun Python project would be to write my own, super simple command line browser app, like W3m, for an Android phone. That'll have to wait, of course, until I'm done with my first Raspberry PI gaming machine.
+'''
+
+
+# The program starts here.
+import subprocess
+import datetime
+import time
+import getpass
+
+# Clear the screen before the main menu prints.
+print("\033[H\033[J")
+
+# Print the welcome message 
+print("Welcome to your system administration menu.")
+print("Choose an option below or press 0 to exit.")
+
+# Define a function that will record what the user did in a audit file entitled "audit_log."
+def audit_update( audit_text ):
+	output_file = open("audit_log", "a")
+	timestamp = datetime.datetime.now()
+	timestamp_str = str(timestamp)
+	user = getpass.getuser()
+	output_file.write(audit_text + " command by " + user + " at " + timestamp_str + "\n")
+	return
+
+# Set a variable for the while-loop below.
+user_input = 1
+
+# A while loop starts here that will loop the main menu until the user types 0.
+while (user_input != "0"):
+
+	# The subprocess commands below explain the options that the user has in this program.
+	print("")
+	print("Press 1 for a short list of the contents of your home directory.")
+	print("Press 2 for a complete list of the contents of your home directory.")
+	print("Press 3 for a list of the contents of your home directory in a detailed format.")
+	print("Press 4 for battery power.")
+	print("Press 5 for your current directory.")
+	print("Press 6 for who is logged into your computer.")
+	print("Press 7 for scheduled tasks.")
+	print("Press 8 for a memory listing of your computer.")
+	print("Press 9 to list processes.")
+	print("")
+
+	# Ask and take input from user and save in the user_input variable. 
+	user_input = input("Type your choice: ")
+	print("")
+
+	if (user_input == "1"):
+		# Subprocess command to execute a Bash list command
+		print("Process you are running:")
+		subprocess.call("ls")
+
+		# Update the audit_log file.
+		audit_text = "ls"
+		audit_update( audit_text )
+
+	elif (user_input == "2"):
+		# Subprocess command to execute a list command that includes hidden files
+		print("Processes you are running:")
+		subprocess.call(["ls", "-a"])
+
+		# Update the audit_log file.
+		audit_text = "ls"
+		audit_update( audit_text )
+
+	elif (user_input == "3"):
+		# Subprocess command to execute a long list command that includes hidden files 
+		print("Processes you are running:")
+		subprocess.call(["ls", "-la"])
+
+		# Update the audit_log file.
+		audit_text = "ls"
+		audit_update( audit_text )
+
+	elif (user_input == "4"):
+		# Subprocess command that lists battery information
+		print("Battery information:")
+		subprocess.call(["upower", "-i", "/org/freedesktop/UPower/devices/battery_BAT0"])
+
+		# Update the audit_log file.
+		audit_text = "upower"
+		audit_update( audit_text )
+
+	elif (user_input == "5"):
+		# Subprocess command that prints the current working directory
+		print("Your current directory:")
+		subprocess.call("pwd")
+
+		# Update the audit_log file.
+		audit_text = "pwd"
+		audit_update( audit_text )
+
+	elif (user_input == "6"):
+		# Subprocess command that prints who is logged in
+		print("Users:")
+		subprocess.call("who")
+
+		# Update the audit_log file.
+		audit_text = "who"
+		audit_update( audit_text )
+
+	elif (user_input == "7"):
+		# Subprocess command that prints scheduled tasks
+		print("Scheduled tasks:")
+		subprocess.call(["crontab", "-l"])
+
+		# Update the audit_log file.
+		audit_text = "crontab"
+		audit_update( audit_text )
+
+	elif (user_input == "8"):
+		# Subprocess command that prints memory information
+		print("Memory usage:")
+		subprocess.call("free")
+
+		# Update the audit_log file.
+		audit_text = "free"
+		audit_update( audit_text )
+
+	elif (user_input == "9"):
+		# Ask user for the type of process listing
+		print("")
+		print("Type the iprocess info you want: ")
+		print("Press 1 for a general list.")
+		print("Press 2 for process IDs and users.")
+		print("Press 3 for process IDs and memory consumed.")
+		print("Press 4 for process IDs and command names.")
+		print("")
+
+		# Take input and save in the process_input variable.
+		process_input = input("What kind of process information do you want: ")
+		print("Processes:")
+		if (process_input == "1"):
+			# Subprocess command that lists processes
+			subprocess.call(["ps", "aux"])
+			print("")
+
+			# Update the audit_log file.
+			audit_text = "ps"
+			audit_update( audit_text )
+
+		elif (process_input == "2"):
+			# Subprocess command that lists process IDs and their user
+			subprocess.call(["ps", "-o", "pid user=User"])
+
+			# Update the audit_log file.
+			audit_text = "ps"
+			audit_update( audit_text )
+
+		elif (process_input == "3"):
+			# Subprocess command that lists process IDs and the memory they use
+			subprocess.call(["ps", "-o", "pid pmem=Memory"])
+
+			# Update the audit_log file.
+			audit_text = "ps" 
+			audit_update( audit_text )
+
+		elif (process_input == "4"):
+			# Subprocess command that lists process IDs and the name of their commands
+			subprocess.call(["ps", "-o", "pid comm=Command"])
+
+			# Update the audit_log file.
+			audit_text = "ps"
+			audit_update( audit_text )
+
+	elif (user_input == "0"):
+		# Clear the screen and a print message indicating the user is ending the program.
+		print("\033[H\033[J")
+		print("Ending systems administration program.")
+		print("")
+
+		# End the program with a break command
+		break
+
+	else: 
+		# If the user typed anything other than the options above, print an error message.
+		print("Invalid Input.")	
+
+	# So the user has a chance to read the results of the loop, ask him or her to press the enter key before looping again.
+	print("")
+	user_input = input("Press enter to continue.")
+
+	# Clear the screen for the next loop.	
+	print("\033[H\033[J")
